@@ -28,20 +28,34 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
 INSTALLED_APPS = [
+    # Django default apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",  # Make sure this is included as allauth requires it
+
+    # Third-party apps
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+
+    # dj_rest_auth
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+
+    # Your apps
     "accounts",
     "posts",
 ]
+
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -67,6 +81,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -130,10 +145,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Custom User Config
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-# Rest frame work Config
-REST_FRAMEWORK = {  # new
+# Rest framework Config
+REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ],
 }
 
@@ -142,4 +161,8 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
 )
 
-CSRF_TRUSTED_ORIGINS = "http://localhost:3000"
+# CSRF_TRUSTED_ORIGINS = "http://localhost:8000"
+
+# AUTH CONFIG
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SITE_ID = 1
